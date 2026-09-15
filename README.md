@@ -9,7 +9,7 @@ Tongji University, Shanghai, China
 
 ## Overview
 
-This repository contains code for predicting and interpreting organic micropollutant (OMP) rejection by polyamide nanofiltration and reverse-osmosis membranes. It is organized around the dynamic hydrophobicity framework developed in the accompanying study.
+This repository contains research code and supporting computational materials for predicting and interpreting organic micropollutant (OMP) rejection by polyamide nanofiltration and reverse-osmosis membranes. It is organized around the dynamic hydrophobicity framework developed in the accompanying study.
 
 The current model-training module covers:
 
@@ -17,24 +17,16 @@ The current model-training module covers:
 2. Define input features and the rejection target.
 3. Repeat train/test splitting across random seeds.
 4. Impute missing values in a preprocessing pipeline.
-5. Illustrate cross-validated hyperparameter selection.
+5. Perform cross-validated hyperparameter selection.
 6. Train an XGBoost regression model.
 7. Calculate adjusted R², RMSE, and MAE.
 8. Aggregate and save evaluation results.
 
 ## Project scope
 
-The repository is intended to grow with the public release of the research workflow. The current version focuses on model training and evaluation. Future releases may add modules for model interpretation and supporting analyses, including SHAP, partial-dependence analysis, molecular descriptors, visualization, and other reproducibility materials.
+This repository is the public code home for the broader study. Its scope includes model development, performance evaluation, SHAP and partial-dependence interpretation, molecular-descriptor analysis, scientific visualization, and related supporting workflows. Modules and reproducibility materials will be added as they are prepared for public release.
 
-Some study assets are not included in the current release, including:
-
-- the underlying literature-derived dataset;
-- complete feature names and data-curation rules;
-- the full hyperparameter search space or optimization settings;
-- model constraints and other study-specific configurations;
-- analysis modules that have not yet been prepared for public release.
-
-The numerical results reported in the manuscript require the corresponding study data and experiment configuration.
+The current release contains the model-training and evaluation module. Reproducing numerical results from the manuscript also requires the corresponding study data and experiment configuration.
 
 ## Structure
 
