@@ -39,19 +39,8 @@ def load_data(path: Path) -> pd.DataFrame:
     data = pd.read_csv(path)
     return data.copy()
 
-
 # =========================
-# 4) 指标辅助函数
-# =========================
-def calc_adjusted_r2(r2: float, n_samples: int, n_features: int) -> float:
-    """根据样本量和特征数计算调整后的 R²。"""
-    if n_samples <= n_features + 1:
-        return r2
-    return 1 - (1 - r2) * (n_samples - 1) / (n_samples - n_features - 1)
-
-
-# =========================
-# 5) 预处理与模型流水线
+# 4) 预处理与模型流水线
 # =========================
 def build_pipeline(params: dict, random_state: int) -> Pipeline:
     model_kwargs = {
@@ -70,7 +59,7 @@ def build_pipeline(params: dict, random_state: int) -> Pipeline:
 
 
 # =========================
-# 6) 超参数优化
+# 5) 超参数优化
 # =========================
 def optimize_hyperparameters(
     X_train: pd.DataFrame,
@@ -97,7 +86,7 @@ def optimize_hyperparameters(
 
 
 # =========================
-# 7) 单个随机种子的训练与评估
+# 6) 单个随机种子的训练与评估
 # =========================
 def run_one_seed(data: pd.DataFrame, seed: int) -> dict:
     """完成一次数据切分、调参、训练、预测和指标计算。"""
@@ -112,7 +101,6 @@ def run_one_seed(data: pd.DataFrame, seed: int) -> dict:
     X_test = test_data[BASE_INPUT_COLS]
     y_test = test_data[OBJ_COL].to_numpy().ravel()
 
-    # 先通过交叉验证选择参数，再使用训练集拟合最终模型。
     best_params, best_cv_r2 = optimize_hyperparameters(
         X_train,
         y_train,
@@ -144,7 +132,7 @@ def run_one_seed(data: pd.DataFrame, seed: int) -> dict:
 
 
 # =========================
-# 8) 随机种子循环与结果汇总
+# 7) 随机种子循环与结果汇总
 # =========================
 def main() -> None:
     """运行模型训练与评估流程，并保存指标及参数摘要。"""
@@ -156,19 +144,17 @@ def main() -> None:
         print(f"正在训练 Seed {seed} ...")
         results.append(run_one_seed(data, seed))
 
-    # 指标表不包含嵌套参数，便于后续统计分析。
     metrics_df = pd.DataFrame(
         [{key: value for key, value in item.items() if key != "best_params"} for item in results]
     )
     metrics_df.to_csv(OUTPUT_DIR / "metrics_summary.csv", index=False)
 
-    # 按交叉验证指标选出代表性结果，并单独保存参数摘要。
     best_result = max(results, key=lambda item: item["R2_cv_adj"])
     with (OUTPUT_DIR / "selected_params.json").open("w", encoding="utf-8") as file:
         json.dump(best_result["best_params"], file, ensure_ascii=False, indent=2)
 
     print(
-        "平均 CV 调整 R²: "
+        "平均 CV R²: "
         f"{metrics_df['R2_cv_adj'].mean():.3f} ± {metrics_df['R2_cv_adj'].std():.3f}"
     )
     print(f"总耗时: {(time.time() - started_at) / 60:.2f} 分钟")
